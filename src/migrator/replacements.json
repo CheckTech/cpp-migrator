@@ -7,7 +7,8 @@
     "m_dimstyle_id": "Id()" ,
     "FindHatchPattern": "HatchPatternFromName" ,
     "SetLayerName": "SetName" ,
-    "SetLayerIndex": "SetIndex" ,
+    "SetLayerIndex": "SetIndex",
+    "\\.LayerIndex\\(\\)": ".Index()",
     "meshvertex_object": "meshvertex_filter" ,
     "ON_MeshVertexRef": "ON_MeshComponentRef" ,
     "MeshVertex": "MeshComponentRef" ,
@@ -57,7 +58,7 @@
     "(.*DefaultAnalysisMeshParameters.*)": "#error Use ON_MeshParameters::DefaultAnalysisMesh. See http://developer.rhino3d.com/wip/guides/cpp/migrate_your_plugin_windows/ for details. //$1",
     "(.*AddDrawCallback.*)": "#error Use CRhinoDrawCallback.Enable(doc). See http://developer.rhino3d.com/wip/guides/cpp/migrate_your_plugin_windows/ for details. //$1",
     "(.*RemoveDrawCallback.*)": "#error Use CRhinoDrawCallback.Disable(doc). See http://developer.rhino3d.com/wip/guides/cpp/migrate_your_plugin_windows/ for details. //$1",
-
+    "(.*DisplayMode\\(\\).*)": "#error CRhinoViewport::DisplayMode() has been removed. See http://developer.rhino3d.com/wip/guides/cpp/migrate_your_plugin_windows/ for details. //$1",
     "(.*ONX_Model.*)": "#error ONX_Model has changed a lot. See http://developer.rhino3d.com/wip/guides/cpp/migrate_your_plugin_windows/ for details. //$1",
 
     "ON_Texture::no_texture_type": "ON_Texture::TYPE::no_texture_type",
@@ -71,5 +72,10 @@
     "ON_Texture::decal_texture": "ON_Texture::MODE::decal_texture",
     "ON_Texture::blend_texture": "ON_Texture::MODE::blend_texture",
 
-    "GetRhinoVP\\(\\).": "GetRhinoVP()->" 
+    "GetRhinoVP\\(\\)\\.": "GetRhinoVP()->",
+    "#include \"[^\"]+RhinoSdkStdafxPreamble.h\"":  "#include \"RhinoSdkStdafxPreamble.h\"",
+    "#include \"[^\"]+RhinoSdk.h\"":  "#include \"RhinoSdk.h\"",
+    "#include \"[^\"]+RhRdkHeaders.h\"":  "#include \"RhRdkHeaders.h\"",
+    "#include \"[^\"]+rhinoSdkPlugInLinkingPragmas.h\"": "#include \"rhinoSdkPlugInLinkingPragmas.h\"",
+    "RHINO_PLUG_IN_DECLARE": "#include \"rhinoSdkPlugInDeclare.h\"\nRHINO_PLUG_IN_DECLARE"
 }
