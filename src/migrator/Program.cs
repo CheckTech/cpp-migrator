@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using System.Xml.Linq;
 using System.Linq;
 using System.Reflection;
 using System.IO;
+using System.Text;
 
 namespace migrator
 {
@@ -23,8 +25,31 @@ namespace migrator
 
       string projectFolder = args[0];
 
+      MakeSolutionChanges(projectFolder);
       MakeProjectChanges(projectFolder);
       MakeCodeChanges(projectFolder);
+    }
+
+    static void MakeSolutionChanges(string projectFolder)
+    {
+      foreach (var file in Directory.GetFiles(projectFolder, "*.sln"))
+      {
+        StringBuilder body = new StringBuilder();
+        using (var f = new StreamReader(file))
+        {
+          string line;
+          while ((line = f.ReadLine()) != null)
+          {
+            if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(line, "Win32", CompareOptions.IgnoreCase) >= 0)
+              continue;
+
+            line = line.Replace("PseudoDebug", "DebugRhino");
+            body.Append(line).Append("\r\n");
+          }
+        }
+
+        System.IO.File.WriteAllText(file, body.ToString());
+      }
     }
 
     static void MakeProjectChanges(string projectFolder)
@@ -70,6 +95,8 @@ namespace migrator
             project_configuration.SetAttributeValue("Include", "Debug|x64");
             config.Value = "Debug";
           }
+
+
         }
 
 
@@ -79,9 +106,16 @@ namespace migrator
           if (CleanupElementCondition(property_group))
             elements_to_remove.Add(property_group);
 
-          var platform_toolset = property_group.Element(ns + "PlatformToolset");
-          if (platform_toolset != null)
-            platform_toolset.Value = "v140";
+          var propertyGroupLabel = property_group.Attribute("Label")?.Value;
+          var platformToolset = property_group.Element(ns + "PlatformToolset");
+          if (platformToolset == null && propertyGroupLabel != null && propertyGroupLabel == "Configuration")
+          {
+            platformToolset = new XElement(ns + "PlatformToolset");
+            property_group.Add(platformToolset);
+          }
+
+          if (platformToolset != null)
+            platformToolset.Value = "v140";
         }
 
         foreach (XElement item_definition_group in vcxproj.Root.Elements(ns + "ItemDefinitionGroup"))
