@@ -63,7 +63,7 @@ namespace migrator
         // Update tools version
         if (vcxproj.Root != null)
         {
-          vcxproj.Root.SetAttributeValue("ToolsVersion", "14.0");
+          vcxproj.Root.SetAttributeValue("ToolsVersion", "15.0");
 
           // Update Project Configurations
 
@@ -87,6 +87,7 @@ namespace migrator
 
               if (_renameBuildConfigurations && include.StartsWith("Debug|x64"))
               {
+                elementsToRemove.Add(projectConfiguration);
                 // Rename Debug project configurations to DebugRhino
                 var config = projectConfiguration.Element(ns + "Configuration");
                 projectConfiguration.SetAttributeValue("Include", "DebugRhino|x64");
@@ -210,7 +211,9 @@ namespace migrator
         return true;
 
       if (_renameBuildConfigurations && condition.Contains("'$(Configuration)|$(Platform)'=='Debug|x64'"))
-        element.SetAttributeValue("Condition", "'$(Configuration)|$(Platform)'=='DebugRhino|x64'");
+        return true;
+        //element.SetAttributeValue("Condition", "'$(Configuration)|$(Platform)'=='DebugRhino|x64'");
+
       if (_renameBuildConfigurations && condition.Contains("'$(Configuration)|$(Platform)'=='PseudoDebug|x64'"))
         element.SetAttributeValue("Condition", "'$(Configuration)|$(Platform)'=='Debug|x64'");
 
