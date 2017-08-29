@@ -120,7 +120,7 @@ namespace migrator
             }
 
             if (platformToolset != null)
-              platformToolset.Value = "v140";
+              platformToolset.Value = "v141";
           }
 
           foreach (XElement itemDefinitionGroup in vcxproj.Root.Elements(ns + "ItemDefinitionGroup"))
